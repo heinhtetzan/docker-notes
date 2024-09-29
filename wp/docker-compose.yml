@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:5.7               # Use the MySQL 5.7 image
+    container_name: my-mysql       # Name of the MySQL container
+    environment:
+      MYSQL_ROOT_PASSWORD: asdffdsa    # Set the root password
+      MYSQL_DATABASE: wp                # Create a database named 'wp'
+      MYSQL_USER: hhz                   # Create a MySQL user named 'hhz'
+      MYSQL_PASSWORD: asdffdsa          # Set the password for the user
+    ports:
+      - "5500:3306"                    # Map port 5500 on the host to 3306 in the container
+    volumes:
+      - mysql_data:/var/lib/mysql      # Persist MySQL data using a volume
+
+  wordpress:
+    image: wordpress:latest          # Use the latest WordPress image
+    container_name: my-wp            # Name of the WordPress container
+    ports:
+      - "8080:80"                    # Map port 8080 on the host to port 80 in the container
+    environment:
+      WORDPRESS_DB_HOST: db:3306     # Connect to the MySQL container
+      WORDPRESS_DB_USER: hhz         # MySQL user created above
+      WORDPRESS_DB_PASSWORD: asdffdsa # Password for the MySQL user
+      WORDPRESS_DB_NAME: wp          # Name of the database
+    depends_on:
+      - db                          # Ensure the MySQL container starts first
+
+volumes:
+  mysql_data:
